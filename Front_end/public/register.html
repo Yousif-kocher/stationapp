@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .login-link {
+            text-align: center;
+            margin-top: 10px;
+        }
+        .error {
+            color: red;
+            text-align: center;
+        }
+        .success {
+            color: green;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Register</h2>
+    <form id="registerForm">
+        <input type="text" id="fullname" name="fullname" placeholder="Full Name" required><br>
+        <input type="text" id="station" name="station" placeholder="Station Name" required><br>
+        <input type="text" id="username" name="username" placeholder="Username" required><br>
+        <input type="password" id="password" name="password" placeholder="Password" required><br>
+        <button type="submit">Register</button>
+    </form>
+    <div class="login-link">
+        <p>Already have an account? <a href="login.html">Login here</a></p>
+    </div>
+    <div id="message"></div>
+</div>
+
+<script>
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
+        e.preventDefault(); // Prevent form submission
+        
+        const fullname = document.getElementById('fullname').value;
+        const station = document.getElementById('station').value;
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        // Create the payload for the POST request
+        const data = {
+            fullname: fullname,
+            station: station,
+            username: username,
+            password: password
+        };
+
+        try {
+            // Send POST request to the /api/register endpoint
+            const response = await fetch('http://localhost:3000/api/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+
+            const result = await response.json();
+
+            // Show success or error message
+            const messageDiv = document.getElementById('message');
+            if (response.ok) {
+                messageDiv.classList.add('success');
+                messageDiv.textContent = 'Registration successful! You can now log in.';
+            } else {
+                messageDiv.classList.add('error');
+                messageDiv.textContent = `Error: ${result.message || 'Something went wrong'}`;
+            }
+
+        } catch (error) {
+            console.error('Error:', error);
+            const messageDiv = document.getElementById('message');
+            messageDiv.classList.add('error');
+            messageDiv.textContent = 'Network error. Please try again later.';
+        }
+    });
+</script>
+
+</body>
+</html>
